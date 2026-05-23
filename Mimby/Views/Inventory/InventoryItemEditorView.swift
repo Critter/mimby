@@ -72,6 +72,7 @@ struct InventoryItemEditorView: View {
                                     .font(.system(size: 38))
                             }
                             .accessibilityLabel("Decrease \(selectedUnitType.displayName)")
+                            .buttonStyle(.plain)
 
                             TextField("Quantity", value: quantityBinding(for: selectedUnitType), format: .number)
                                 .keyboardType(.numberPad)
@@ -88,6 +89,7 @@ struct InventoryItemEditorView: View {
                                     .font(.system(size: 38))
                             }
                             .accessibilityLabel("Increase \(selectedUnitType.displayName)")
+                            .buttonStyle(.plain)
                         }
                         .tint(AppTheme.accent)
                     }
