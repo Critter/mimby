@@ -11,6 +11,8 @@ final class ShoppingListItem {
     var quantityNeeded: Double
     var quantityOnHand: Double
     var quantityToBuy: Double
+    var quantityReceived: Double = 0
+    var quantityApplied: Double = 0
     var createdAt: Date
 
     init(
