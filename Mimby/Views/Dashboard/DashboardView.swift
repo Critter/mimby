@@ -43,7 +43,7 @@ struct DashboardView: View {
                         HStack {
                             Text(tier.displayName)
                             Spacer()
-                            Text("\(viewModel.total(category: category, tier: tier))")
+                            Text(QuantityFormat.text(viewModel.total(category: category, tier: tier)))
                                 .font(.title3.bold())
                                 .foregroundStyle(AppTheme.accent)
                         }
@@ -70,7 +70,7 @@ struct DashboardView: View {
                                 .font(.caption)
                                 .foregroundStyle(AppTheme.muted)
                             if title == "Low Stock" {
-                                Text("\(item.totalQuantity) on hand • threshold \(item.lowStockThreshold)")
+                                Text("\(QuantityFormat.text(item.totalQuantity)) on hand • threshold \(item.lowStockThreshold)")
                                     .font(.caption)
                                     .foregroundStyle(AppTheme.accent)
                             }

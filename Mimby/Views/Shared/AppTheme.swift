@@ -9,6 +9,18 @@ enum AppTheme {
     static let muted = Color.white.opacity(0.64)
 }
 
+enum QuantityFormat {
+    static func text(_ value: Double) -> String {
+        if value.rounded() == value {
+            return String(Int(value))
+        }
+
+        return String(format: "%.2f", value)
+            .replacingOccurrences(of: "0$", with: "", options: .regularExpression)
+            .replacingOccurrences(of: "\\.$", with: "", options: .regularExpression)
+    }
+}
+
 struct PrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -67,4 +79,3 @@ extension View {
             .preferredColorScheme(.dark)
     }
 }
-

@@ -76,10 +76,10 @@ struct ShoppingListView: View {
         }
     }
 
-    private func shoppingMetric(_ label: String, _ value: Int, _ unit: UnitType, highlight: Bool = false) -> some View {
+    private func shoppingMetric(_ label: String, _ value: Double, _ unit: UnitType, highlight: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label).font(.caption).foregroundStyle(AppTheme.muted)
-            Text("\(value) \(unit.displayName)")
+            Text("\(QuantityFormat.text(value)) \(unit.displayName)")
                 .font(.subheadline.bold())
                 .foregroundStyle(highlight ? AppTheme.accent : .white)
         }
@@ -97,7 +97,7 @@ struct ShoppingListView: View {
             lines.append("")
             lines.append(category.displayName)
             lines += categoryRows.map {
-                "- \($0.itemName): buy \($0.quantityToBuy) \($0.unitType.displayName) (need \($0.quantityNeeded), on hand \($0.quantityOnHand))"
+                "- \($0.itemName): buy \(QuantityFormat.text($0.quantityToBuy)) \($0.unitType.displayName) (need \(QuantityFormat.text($0.quantityNeeded)), on hand \(QuantityFormat.text($0.quantityOnHand)))"
             }
         }
         return lines.joined(separator: "\n")

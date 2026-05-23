@@ -77,7 +77,7 @@ struct RecountView: View {
         let summary = activeInventory.map { item in
             let units = item.units
                 .sorted { $0.unitType.displayName < $1.unitType.displayName }
-                .map { "\($0.quantity) \($0.unitType.displayName)" }
+                .map { "\(QuantityFormat.text($0.displayQuantity)) \($0.unitType.displayName)" }
                 .joined(separator: ", ")
             return "\(item.name) [\(item.category.displayName) / \(item.tier.displayName)]: \(units)"
         }
@@ -112,15 +112,18 @@ struct RecountUnitStepper: View {
     @Bindable var unit: InventoryUnit
 
     var body: some View {
-        Stepper(value: $unit.quantity, in: 0...999) {
+        Stepper(value: Binding {
+            unit.displayQuantity
+        } set: { newValue in
+            unit.displayQuantity = newValue
+        }, in: 0...999, step: 0.25) {
             HStack {
                 Text(unit.unitType.displayName)
                 Spacer()
-                Text("\(unit.quantity)")
+                Text(QuantityFormat.text(unit.displayQuantity))
                     .font(.headline)
                     .foregroundStyle(AppTheme.accent)
             }
         }
     }
 }
-

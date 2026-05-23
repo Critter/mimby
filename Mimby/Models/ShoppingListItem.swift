@@ -8,9 +8,9 @@ final class ShoppingListItem {
     var categoryRaw: String
     var tierRaw: String
     var unitTypeRaw: String
-    var quantityNeeded: Int
-    var quantityOnHand: Int
-    var quantityToBuy: Int
+    var quantityNeeded: Double
+    var quantityOnHand: Double
+    var quantityToBuy: Double
     var createdAt: Date
 
     init(
@@ -19,9 +19,9 @@ final class ShoppingListItem {
         category: AlcoholCategory,
         tier: InventoryTier,
         unitType: UnitType,
-        quantityNeeded: Int,
-        quantityOnHand: Int,
-        quantityToBuy: Int,
+        quantityNeeded: Double,
+        quantityOnHand: Double,
+        quantityToBuy: Double,
         createdAt: Date = .now
     ) {
         self.id = id
@@ -39,4 +39,3 @@ final class ShoppingListItem {
     var tier: InventoryTier { InventoryTier(rawValue: tierRaw) ?? .domestic }
     var unitType: UnitType { UnitType(rawValue: unitTypeRaw) ?? .caseUnit }
 }
-

@@ -10,7 +10,7 @@ struct InventoryItemEditorView: View {
     @State private var isArchived: Bool
     @State private var lowStockThreshold: Int
     @State private var selectedUnitType: UnitType
-    @State private var quantities: [UnitType: Int]
+    @State private var quantities: [UnitType: Double]
     @State private var showDeleteConfirmation = false
 
     private let item: InventoryItem?
@@ -60,7 +60,7 @@ struct InventoryItemEditorView: View {
                             Button {
                                 selectedUnitType = unitType
                             } label: {
-                                Text("\(quantities[unitType, default: 0]) \(unitType.displayName)")
+                                Text("\(QuantityFormat.text(quantities[unitType, default: 0])) \(unitType.displayName)")
                                     .font(.subheadline.bold())
                                     .padding(.horizontal, 12)
                                     .frame(minHeight: 40)
@@ -79,7 +79,7 @@ struct InventoryItemEditorView: View {
 
                         HStack(spacing: 14) {
                             Button {
-                                adjustQuantity(for: selectedUnitType, by: -1)
+                                adjustQuantity(for: selectedUnitType, by: -0.25)
                             } label: {
                                 Image(systemName: "minus.circle.fill")
                                     .font(.system(size: 38))
@@ -96,7 +96,7 @@ struct InventoryItemEditorView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
                             Button {
-                                adjustQuantity(for: selectedUnitType, by: 1)
+                                adjustQuantity(for: selectedUnitType, by: 0.25)
                             } label: {
                                 Image(systemName: "plus.circle.fill")
                                     .font(.system(size: 38))
@@ -150,17 +150,17 @@ struct InventoryItemEditorView: View {
         }
     }
 
-    private func adjustQuantity(for unitType: UnitType, by amount: Int) {
+    private func adjustQuantity(for unitType: UnitType, by amount: Double) {
         setQuantity(max(quantity(for: unitType) + amount, 0), for: unitType)
     }
 
-    private func quantity(for unitType: UnitType) -> Int {
+    private func quantity(for unitType: UnitType) -> Double {
         quantities[unitType, default: 0]
     }
 
-    private func setQuantity(_ quantity: Int, for unitType: UnitType) {
+    private func setQuantity(_ quantity: Double, for unitType: UnitType) {
         var updatedQuantities = quantities
-        updatedQuantities[unitType] = max(quantity, 0)
+        updatedQuantities[unitType] = (max(quantity, 0) * 4.0).rounded() / 4.0
         quantities = updatedQuantities
     }
 
@@ -185,7 +185,9 @@ struct InventoryItemEditorView: View {
                 lowStockThreshold: lowStockThreshold
             )
             newItem.units = category.allowedUnits.map {
-                InventoryUnit(unitType: $0, quantity: quantities[$0, default: 0], item: newItem)
+                let unit = InventoryUnit(unitType: $0, quantity: 0, item: newItem)
+                unit.displayQuantity = quantities[$0, default: 0]
+                return unit
             }
             modelContext.insert(newItem)
         }
@@ -205,7 +207,7 @@ struct InventoryItemEditorView: View {
 
     private func applyQuantities(to item: InventoryItem) {
         for unitType in category.allowedUnits {
-            item.unit(for: unitType)?.quantity = quantities[unitType, default: 0]
+            item.unit(for: unitType)?.displayQuantity = quantities[unitType, default: 0]
         }
     }
 
@@ -220,7 +222,7 @@ struct InventoryItemEditorView: View {
         }
     }
 
-    private func quantityBinding(for unitType: UnitType) -> Binding<Int> {
+    private func quantityBinding(for unitType: UnitType) -> Binding<Double> {
         Binding {
             quantity(for: unitType)
         } set: { newValue in

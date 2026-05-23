@@ -94,7 +94,7 @@ struct InventoryItemRow: View {
 
     private var visibleUnits: [InventoryUnit] {
         item.units
-            .filter { $0.quantity > 0 }
+            .filter { $0.displayQuantity > 0 }
             .sorted { $0.unitType.displayName < $1.unitType.displayName }
     }
 
@@ -139,7 +139,7 @@ struct InventoryItemRow: View {
                         Button {
                             selectedUnit = unit
                         } label: {
-                            Text("\(unit.quantity) \(unit.unitType.displayName)")
+                            Text("\(QuantityFormat.text(unit.displayQuantity)) \(unit.unitType.displayName)")
                                 .font(.subheadline.bold())
                                 .padding(.horizontal, 12)
                                 .frame(minHeight: 38)

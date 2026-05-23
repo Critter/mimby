@@ -48,15 +48,15 @@ final class InventoryItem {
         set { tierRaw = newValue.rawValue }
     }
 
-    func quantity(for unitType: UnitType) -> Int {
-        units.first { $0.unitType == unitType }?.quantity ?? 0
+    func quantity(for unitType: UnitType) -> Double {
+        units.first { $0.unitType == unitType }?.displayQuantity ?? 0
     }
 
     func unit(for unitType: UnitType) -> InventoryUnit? {
         units.first { $0.unitType == unitType }
     }
 
-    var totalQuantity: Int {
-        units.reduce(0) { $0 + $1.quantity }
+    var totalQuantity: Double {
+        units.reduce(0) { $0 + $1.displayQuantity }
     }
 }

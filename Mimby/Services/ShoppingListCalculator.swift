@@ -3,7 +3,7 @@ import Foundation
 enum ShoppingListCalculator {
     static func calculate(requirements: [EventRequirement], inventory: [InventoryItem]) -> [ShoppingListItem] {
         requirements.map { requirement in
-            let onHand: Int
+            let onHand: Double
             let displayName: String
 
             if let item = requirement.specificItem {
@@ -25,11 +25,10 @@ enum ShoppingListCalculator {
                 category: requirement.category,
                 tier: requirement.tier,
                 unitType: requirement.unitType,
-                quantityNeeded: requirement.quantityNeeded,
+                quantityNeeded: Double(requirement.quantityNeeded),
                 quantityOnHand: onHand,
-                quantityToBuy: max(requirement.quantityNeeded - onHand, 0)
+                quantityToBuy: max(Double(requirement.quantityNeeded) - onHand, 0)
             )
         }
     }
 }
-
