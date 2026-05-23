@@ -92,6 +92,12 @@ struct InventoryItemRow: View {
     @State private var selectedUnit: InventoryUnit?
     let onEdit: () -> Void
 
+    private var visibleUnits: [InventoryUnit] {
+        item.units
+            .filter { $0.quantity > 0 }
+            .sorted { $0.unitType.displayName < $1.unitType.displayName }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
@@ -119,18 +125,29 @@ struct InventoryItemRow: View {
                 .accessibilityLabel("Edit \(item.name)")
             }
 
-            FlowLayout(spacing: 8) {
-                ForEach(item.units.sorted { $0.unitType.displayName < $1.unitType.displayName }) { unit in
-                    Button {
-                        selectedUnit = unit
-                    } label: {
-                        Text("\(unit.quantity) \(unit.unitType.displayName)")
-                            .font(.subheadline.bold())
-                            .padding(.horizontal, 12)
-                            .frame(minHeight: 38)
-                            .background(AppTheme.panelRaised)
-                            .foregroundStyle(.white)
-                            .clipShape(Capsule())
+            if visibleUnits.isEmpty {
+                Text("No counted stock")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(AppTheme.muted)
+                    .padding(.horizontal, 12)
+                    .frame(minHeight: 38)
+                    .background(AppTheme.panelRaised.opacity(0.6))
+                    .clipShape(Capsule())
+            } else {
+                FlowLayout(spacing: 8) {
+                    ForEach(visibleUnits) { unit in
+                        Button {
+                            selectedUnit = unit
+                        } label: {
+                            Text("\(unit.quantity) \(unit.unitType.displayName)")
+                                .font(.subheadline.bold())
+                                .padding(.horizontal, 12)
+                                .frame(minHeight: 38)
+                                .background(AppTheme.panelRaised)
+                                .foregroundStyle(.white)
+                                .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }
