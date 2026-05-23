@@ -8,6 +8,7 @@ struct InventoryItemEditorView: View {
     @State private var category: AlcoholCategory
     @State private var tier: InventoryTier
     @State private var isArchived: Bool
+    @State private var lowStockThreshold: Int
     @State private var selectedUnitType: UnitType
     @State private var quantities: [UnitType: Int]
     @State private var showDeleteConfirmation = false
@@ -20,6 +21,7 @@ struct InventoryItemEditorView: View {
         _category = State(initialValue: item?.category ?? .beer)
         _tier = State(initialValue: item?.tier ?? .domestic)
         _isArchived = State(initialValue: item?.isArchived ?? false)
+        _lowStockThreshold = State(initialValue: item?.lowStockThreshold ?? 1)
         let initialCategory = item?.category ?? .beer
         _selectedUnitType = State(initialValue: initialCategory.allowedUnits.first ?? .caseUnit)
         _quantities = State(initialValue: Dictionary(uniqueKeysWithValues: initialCategory.allowedUnits.map { unitType in
@@ -39,6 +41,17 @@ struct InventoryItemEditorView: View {
                         ForEach(category.tiers) { Text($0.displayName).tag($0) }
                     }
                     Toggle("Archived", isOn: $isArchived)
+                }
+
+                Section("Low Stock") {
+                    Stepper(value: $lowStockThreshold, in: 0...999) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Threshold")
+                            Text("\(lowStockThreshold) total units")
+                                .font(.caption)
+                                .foregroundStyle(AppTheme.muted)
+                        }
+                    }
                 }
 
                 Section("Quantities") {
@@ -158,11 +171,18 @@ struct InventoryItemEditorView: View {
             item.category = category
             item.tier = tier
             item.isArchived = isArchived
+            item.lowStockThreshold = lowStockThreshold
             item.updatedAt = .now
             ensureUnits(for: item)
             applyQuantities(to: item)
         } else {
-            let newItem = InventoryItem(name: trimmedName, category: category, tier: tier, isArchived: isArchived)
+            let newItem = InventoryItem(
+                name: trimmedName,
+                category: category,
+                tier: tier,
+                isArchived: isArchived,
+                lowStockThreshold: lowStockThreshold
+            )
             newItem.units = category.allowedUnits.map {
                 InventoryUnit(unitType: $0, quantity: quantities[$0, default: 0], item: newItem)
             }

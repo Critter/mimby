@@ -12,7 +12,7 @@ struct DashboardViewModel {
 
     var lowStockItems: [InventoryItem] {
         items.filter { item in
-            !item.isArchived && !item.isEightySixed && item.units.reduce(0) { $0 + $1.quantity } <= 1
+            !item.isArchived && !item.isEightySixed && item.totalQuantity <= item.lowStockThreshold
         }
     }
 

@@ -69,6 +69,11 @@ struct DashboardView: View {
                             Text("\(item.category.displayName) • \(item.tier.displayName)")
                                 .font(.caption)
                                 .foregroundStyle(AppTheme.muted)
+                            if title == "Low Stock" {
+                                Text("\(item.totalQuantity) on hand • threshold \(item.lowStockThreshold)")
+                                    .font(.caption)
+                                    .foregroundStyle(AppTheme.accent)
+                            }
                         }
                         Spacer()
                     }
@@ -80,4 +85,3 @@ struct DashboardView: View {
         }
     }
 }
-

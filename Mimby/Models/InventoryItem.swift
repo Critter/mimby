@@ -9,6 +9,7 @@ final class InventoryItem {
     var tierRaw: String
     var isArchived: Bool
     var isEightySixed: Bool
+    var lowStockThreshold: Int
     var createdAt: Date
     var updatedAt: Date
     @Relationship(deleteRule: .cascade, inverse: \InventoryUnit.item) var units: [InventoryUnit]
@@ -20,6 +21,7 @@ final class InventoryItem {
         tier: InventoryTier,
         isArchived: Bool = false,
         isEightySixed: Bool = false,
+        lowStockThreshold: Int = 1,
         createdAt: Date = .now,
         updatedAt: Date = .now,
         units: [InventoryUnit] = []
@@ -30,6 +32,7 @@ final class InventoryItem {
         self.tierRaw = tier.rawValue
         self.isArchived = isArchived
         self.isEightySixed = isEightySixed
+        self.lowStockThreshold = lowStockThreshold
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.units = units
@@ -52,5 +55,8 @@ final class InventoryItem {
     func unit(for unitType: UnitType) -> InventoryUnit? {
         units.first { $0.unitType == unitType }
     }
-}
 
+    var totalQuantity: Int {
+        units.reduce(0) { $0 + $1.quantity }
+    }
+}
