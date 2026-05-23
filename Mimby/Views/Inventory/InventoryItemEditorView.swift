@@ -66,7 +66,7 @@ struct InventoryItemEditorView: View {
 
                         HStack(spacing: 14) {
                             Button {
-                                quantities[selectedUnitType] = max(quantities[selectedUnitType, default: 0] - 1, 0)
+                                adjustQuantity(for: selectedUnitType, by: -1)
                             } label: {
                                 Image(systemName: "minus.circle.fill")
                                     .font(.system(size: 38))
@@ -82,7 +82,7 @@ struct InventoryItemEditorView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
                             Button {
-                                quantities[selectedUnitType, default: 0] += 1
+                                adjustQuantity(for: selectedUnitType, by: 1)
                             } label: {
                                 Image(systemName: "plus.circle.fill")
                                     .font(.system(size: 38))
@@ -132,6 +132,20 @@ struct InventoryItemEditorView: View {
                 Button("Cancel", role: .cancel) {}
             }
         }
+    }
+
+    private func adjustQuantity(for unitType: UnitType, by amount: Int) {
+        setQuantity(max(quantity(for: unitType) + amount, 0), for: unitType)
+    }
+
+    private func quantity(for unitType: UnitType) -> Int {
+        quantities[unitType, default: 0]
+    }
+
+    private func setQuantity(_ quantity: Int, for unitType: UnitType) {
+        var updatedQuantities = quantities
+        updatedQuantities[unitType] = max(quantity, 0)
+        quantities = updatedQuantities
     }
 
     private func save() {
@@ -184,9 +198,9 @@ struct InventoryItemEditorView: View {
 
     private func quantityBinding(for unitType: UnitType) -> Binding<Int> {
         Binding {
-            quantities[unitType, default: 0]
+            quantity(for: unitType)
         } set: { newValue in
-            quantities[unitType] = max(newValue, 0)
+            setQuantity(newValue, for: unitType)
         }
     }
 }
