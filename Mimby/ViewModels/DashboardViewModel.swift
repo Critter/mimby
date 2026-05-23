@@ -5,7 +5,7 @@ struct DashboardViewModel {
 
     func total(category: AlcoholCategory, tier: InventoryTier) -> Int {
         items
-            .filter { !$0.isArchived && $0.category == category && $0.tier == tier }
+            .filter { !$0.isArchived && !$0.isEightySixed && $0.category == category && $0.tier == tier }
             .flatMap(\.units)
             .reduce(0) { $0 + $1.quantity }
     }
@@ -20,4 +20,3 @@ struct DashboardViewModel {
         items.filter { !$0.isArchived && $0.isEightySixed }
     }
 }
-

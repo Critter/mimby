@@ -103,9 +103,14 @@ struct InventoryItemRow: View {
                         .foregroundStyle(AppTheme.muted)
                 }
                 Spacer()
-                Toggle("86", isOn: $item.isEightySixed)
-                    .labelsHidden()
-                    .tint(AppTheme.danger)
+                VStack(spacing: 4) {
+                    Toggle("86'd", isOn: $item.isEightySixed)
+                        .labelsHidden()
+                        .tint(AppTheme.danger)
+                    Text("86'd")
+                        .font(.caption2.bold())
+                        .foregroundStyle(item.isEightySixed ? AppTheme.danger : AppTheme.muted)
+                }
                 Button(action: onEdit) {
                     Image(systemName: "square.and.pencil")
                         .frame(width: 44, height: 44)
