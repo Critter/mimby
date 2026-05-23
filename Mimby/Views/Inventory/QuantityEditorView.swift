@@ -42,6 +42,7 @@ struct QuantityEditorView: View {
                     Button("Save") {
                         unit.quantity = max(draftQuantity, 0)
                         unit.item?.updatedAt = .now
+                        try? unit.modelContext?.save()
                         dismiss()
                     }
                     .buttonStyle(PrimaryButtonStyle())
@@ -52,4 +53,3 @@ struct QuantityEditorView: View {
         }
     }
 }
-

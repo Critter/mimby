@@ -9,7 +9,7 @@ final class InventoryItem {
     var tierRaw: String
     var isArchived: Bool
     var isEightySixed: Bool
-    var lowStockThreshold: Int
+    var lowStockThreshold: Int = 1
     var createdAt: Date
     var updatedAt: Date
     @Relationship(deleteRule: .cascade, inverse: \InventoryUnit.item) var units: [InventoryUnit]

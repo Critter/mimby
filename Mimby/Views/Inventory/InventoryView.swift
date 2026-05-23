@@ -25,6 +25,7 @@ struct InventoryView: View {
                                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                         Button(role: .destructive) {
                                             modelContext.delete(item)
+                                            try? modelContext.save()
                                         } label: {
                                             Label("Delete", systemImage: "trash")
                                         }

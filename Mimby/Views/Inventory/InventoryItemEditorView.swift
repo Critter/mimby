@@ -142,6 +142,7 @@ struct InventoryItemEditorView: View {
                     if let item {
                         modelContext.delete(item)
                     }
+                    try? modelContext.save()
                     dismiss()
                 }
                 Button("Cancel", role: .cancel) {}
@@ -189,6 +190,7 @@ struct InventoryItemEditorView: View {
             modelContext.insert(newItem)
         }
 
+        try? modelContext.save()
         dismiss()
     }
 
