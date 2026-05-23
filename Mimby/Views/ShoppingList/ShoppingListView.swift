@@ -184,9 +184,15 @@ struct ShoppingListRow: View {
                         Label("Add \(QuantityFormat.text(pendingQuantity)) \(item.unitType.displayName) to Inventory", systemImage: "checkmark.circle")
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                } else {
+                } else if item.quantityApplied > 0 {
                     Button {} label: {
                         Label("Received Items Added", systemImage: "checkmark.circle.fill")
+                    }
+                    .buttonStyle(SecondaryButtonStyle())
+                    .disabled(true)
+                } else {
+                    Button {} label: {
+                        Label("Set Received Quantity", systemImage: "plus.forwardslash.minus")
                     }
                     .buttonStyle(SecondaryButtonStyle())
                     .disabled(true)
