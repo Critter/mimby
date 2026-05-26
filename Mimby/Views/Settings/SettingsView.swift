@@ -7,6 +7,7 @@ struct SettingsView: View {
     @Query private var requirements: [EventRequirement]
     @Query private var shoppingItems: [ShoppingListItem]
     @Query private var snapshots: [InventorySnapshot]
+    @State private var showSoftReset = false
     @State private var showFullReset = false
     @State private var showRecount = false
 
@@ -17,18 +18,12 @@ struct SettingsView: View {
                     SectionHeader(title: "Inventory Management")
 
                     Button("Soft Reset Inventory") {
-                        for item in inventory {
-                            for unit in item.units { unit.quantity = 0 }
-                            item.updatedAt = .now
-                        }
+                        showSoftReset = true
                     }
                     .buttonStyle(SecondaryButtonStyle())
 
                     Button("Start Fresh From Recount") {
-                        for item in inventory {
-                            for unit in item.units { unit.quantity = 0 }
-                            item.updatedAt = .now
-                        }
+                        softResetInventory()
                         showRecount = true
                     }
                     .buttonStyle(PrimaryButtonStyle())
@@ -53,6 +48,14 @@ struct SettingsView: View {
             .mimbyScreen()
             .sheet(isPresented: $showRecount) { RecountView() }
             .confirmationDialog(
+                "Set all inventory quantities to zero? Product names, categories, tiers, and settings will stay.",
+                isPresented: $showSoftReset,
+                titleVisibility: .visible
+            ) {
+                Button("Reset Quantities", role: .destructive, action: softResetInventory)
+                Button("Cancel", role: .cancel) {}
+            }
+            .confirmationDialog(
                 "This deletes all products, event requirements, shopping lists, and snapshots.",
                 isPresented: $showFullReset,
                 titleVisibility: .visible
@@ -63,11 +66,21 @@ struct SettingsView: View {
         }
     }
 
+    private func softResetInventory() {
+        for item in inventory {
+            for unit in item.units {
+                unit.displayQuantity = 0
+            }
+            item.updatedAt = .now
+        }
+        try? modelContext.save()
+    }
+
     private func fullReset() {
         inventory.forEach { modelContext.delete($0) }
         requirements.forEach { modelContext.delete($0) }
         shoppingItems.forEach { modelContext.delete($0) }
         snapshots.forEach { modelContext.delete($0) }
+        try? modelContext.save()
     }
 }
-
